@@ -1,0 +1,35 @@
+// Patient Intake Triage — Component Topology
+// Pattern: Sequential (5-step linear chain)
+
+intake_coordinator [SequentialAgent] {
+  extract_symptoms [LlmAgent]
+  verify_insurance [LlmAgent]
+  classify_urgency [LlmAgent]
+  schedule_appointment [LlmAgent]
+  notify_pharmacy [LlmAgent]
+}
+
+emr-mcp [MCP Server] { icon: database, color: blue }
+insurance-api-mcp [MCP Server] { icon: shield, color: green }
+scheduling-mcp [MCP Server] { icon: calendar, color: orange }
+triage_classifier_fn [FunctionTool] { icon: code, color: purple }
+pharmacy-agent [A2A Agent] { icon: pill, color: red, label: "RxPartner Health (external)" }
+
+// Tool connections
+extract_symptoms --> emr-mcp: "patient lookup + symptom recording"
+verify_insurance --> insurance-api-mcp: "eligibility + co-pay"
+classify_urgency --> triage_classifier_fn: "IF/THEN triage rules"
+schedule_appointment --> scheduling-mcp: "search + book appointment"
+notify_pharmacy --> pharmacy-agent: "pre-authorization request (A2A)"
+
+// Sequential flow
+intake_coordinator --> extract_symptoms: "step 1"
+extract_symptoms --> verify_insurance: "step 2"
+verify_insurance --> classify_urgency: "step 3"
+classify_urgency --> schedule_appointment: "step 4"
+schedule_appointment --> notify_pharmacy: "step 5 (conditional)"
+
+// Infrastructure
+Cloud Run [infrastructure] { intake_coordinator }
+Apigee Gateway [infrastructure] { label: "API Gateway + OAuth 2.1" }
+Apigee Gateway --> Cloud Run: "POST /api/v1/intake"

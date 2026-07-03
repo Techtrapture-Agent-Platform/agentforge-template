@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "agentforge-design-agent": {
+      "type": "http",
+      "url": "https://<your-agent-engine-endpoint>/mcp",
+      "note": "Design Agent MCP Server endpoint. Replace with your URL (local: http://localhost:8080/mcp)."
+    }
+  }
+}

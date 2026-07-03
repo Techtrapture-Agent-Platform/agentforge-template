@@ -1,0 +1,8 @@
+# AgentForge — Cursor project rules
+# Route natural-language commands to the universal prompt files.
+When the user says "specify"/"specify my agent"  -> read prompts/specify.md and follow it.
+When the user says "plan"                          -> read prompts/plan.md and follow it.
+When the user says "design"                        -> read prompts/design.md and follow it.
+When the user says "validate"                      -> read prompts/validate.md and follow it.
+When the user says "implement"                     -> read prompts/implement.md and follow it.
+Always fill spec.md against templates/spec-template.md (11 sections).

@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "input": "Severe chest pain for 2 hours, insured, BlueCross PPO",
+    "expected_output": "urgency=emergent, provider=ER, notify_pharmacy=false",
+    "rules_tested": "Rule 1"
+  },
+  {
+    "id": 2,
+    "input": "High fever (103\u00b0F) for 4 days, insured, Aetna HMO",
+    "expected_output": "urgency=urgent, provider=PCP_same_day, notify_pharmacy=true",
+    "rules_tested": "Rule 2 + 5"
+  },
+  {
+    "id": 3,
+    "input": "Diabetes follow-up, medication refill needed, insured, UHC",
+    "expected_output": "urgency=routine, provider=specialist, notify_pharmacy=true",
+    "rules_tested": "Rule 3 + 5"
+  },
+  {
+    "id": 4,
+    "input": "Sprained ankle, insurance expired 2 months ago",
+    "expected_output": "urgency=routine, flag=uninsured_pathway",
+    "rules_tested": "Rule 4"
+  },
+  {
+    "id": 5,
+    "input": "Breathing difficulty + wheezing, insured, Cigna, on albuterol",
+    "expected_output": "urgency=emergent, provider=ER, notify_pharmacy=true",
+    "rules_tested": "Rule 1 + 5"
+  },
+  {
+    "id": 6,
+    "input": "Routine physical exam, no complaints, insured",
+    "expected_output": "urgency=routine, provider=PCP",
+    "rules_tested": "Default"
+  },
+  {
+    "id": 7,
+    "input": "Child age 3, rash + fever 2 days, insured",
+    "expected_output": "urgency=urgent, provider=PCP_same_day",
+    "rules_tested": "Rule 2 variant"
+  },
+  {
+    "id": 8,
+    "input": "Back pain chronic, 6 months, specialist referral, uninsured",
+    "expected_output": "urgency=routine, provider=specialist, flag=uninsured_pathway",
+    "rules_tested": "Rule 3 + 4"
+  },
+  {
+    "id": 9,
+    "input": "Chest pain + expired insurance + medication likely",
+    "expected_output": "urgency=emergent, provider=ER, flag=uninsured_pathway, notify_pharmacy=true",
+    "rules_tested": "Rule 1 + 4 + 5"
+  },
+  {
+    "id": 10,
+    "input": "Headache 1 day, insured, Anthem, no medication",
+    "expected_output": "urgency=routine, provider=PCP, notify_pharmacy=false",
+    "rules_tested": "Default"
+  }
+]

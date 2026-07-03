@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "agentforge-design-agent": {
+      "url": "https://design-agent-mcp-kri6xyjbwa-uk.a.run.app/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:AGENTFORGE_API_KEY}"
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "name": "fnol-claims-agent",
+    "version": "1.0.0",
+    "use_case": "First Notice of Loss claims intake automation",
+    "team": "claims-engineering",
+    "generated_at": "2026-05-23T14:30:00Z",
+    "generated_by": "validate_contract",
+    "source_hash": "sha256:e4f7a2b1c9d8...hash-of-md-plus-diagram...",
+    "diagram_tool": "drawio"
+  },
+  "pattern_composition": {
+    "root_pattern": "Sequential",
+    "composition": ["Sequential", "Parallel", "Loop", "HITL"]
+  },
+  "adk_agent_tree": [
+    { "name": "fnol_coordinator", "type": "SequentialAgent", "role": "Root orchestrator", "parent": null, "model": null, "tools": [] },
+    { "name": "extract_details", "type": "LlmAgent", "role": "Extract claimant details", "parent": "fnol_coordinator", "model": "gemini-2.0-flash", "tools": ["claims-db-mcp"] },
+    { "name": "parallel_enrichment", "type": "ParallelAgent", "role": "Concurrent enrichment", "parent": "fnol_coordinator", "model": null, "tools": [] },
+    { "name": "enrich_policy", "type": "LlmAgent", "role": "Policy enrichment", "parent": "parallel_enrichment", "model": "gemini-2.0-flash", "tools": ["policy-api-mcp"] },
+    { "name": "enrich_vehicle", "type": "LlmAgent", "role": "Vehicle enrichment", "parent": "parallel_enrichment", "model": "gemini-2.0-flash", "tools": ["vehicle-api-mcp"] },
+    { "name": "enrich_weather", "type": "LlmAgent", "role": "Weather enrichment", "parent": "parallel_enrichment", "model": "gemini-2.0-flash", "tools": ["weather-api-mcp"] },
+    { "name": "severity_classifier", "type": "LlmAgent", "role": "Classify severity", "parent": "fnol_coordinator", "model": "gemini-2.0-flash", "tools": ["severity_classifier_fn", "body-shop-a2a"] },
+    { "name": "human_review", "type": "LlmAgent", "role": "Route critical claims", "parent": "fnol_coordinator", "model": "gemini-2.0-flash", "tools": ["review-queue-mcp"] }
+  ],
+  "tool_bindings": [
+    { "name": "claims-db-mcp", "type": "mcp_server", "endpoint": "mcp://claims-db.internal:8080", "auth_method": "mtls", "assigned_to": "extract_details", "discovered_via": "Vertex AI Search", "confidence": 0.95 },
+    { "name": "policy-api-mcp", "type": "mcp_server", "endpoint": "mcp://policy-api.internal:8080", "auth_method": "oauth2", "assigned_to": "enrich_policy", "discovered_via": "Vertex AI Search", "confidence": 0.92 },
+    { "name": "vehicle-api-mcp", "type": "mcp_server", "endpoint": "mcp://vehicle-api.internal:8080", "auth_method": "api_key", "assigned_to": "enrich_vehicle", "discovered_via": "Vertex AI Search", "confidence": 0.88 },
+    { "name": "weather-api-mcp", "type": "mcp_server", "endpoint": "https://api.weather.gov/points", "auth_method": "none", "assigned_to": "enrich_weather", "discovered_via": "Vertex AI Search", "confidence": 0.90 },
+    { "name": "review-queue-mcp", "type": "mcp_server", "endpoint": "mcp://review-queue.internal:8080", "auth_method": "mtls", "assigned_to": "human_review", "discovered_via": "Vertex AI Search", "confidence": 0.85 },
+    { "name": "body-shop-a2a", "type": "a2a_agent", "endpoint": "https://bodyshop.partner.com/a2a", "agent_card_url": "https://bodyshop.partner.com/.well-known/agent.json", "capabilities": ["estimate", "schedule", "parts-lookup"], "assigned_to": "severity_classifier", "discovered_via": "Agent Registry (v2.3, healthy)", "confidence": 0.80 },
+    { "name": "severity_classifier_fn", "type": "function_tool", "assigned_to": "severity_classifier", "discovered_via": "spec §7", "confidence": 0.95 },
+    { "name": "coverage_calculator_fn", "type": "function_tool", "assigned_to": "extract_details", "discovered_via": "spec §7", "confidence": 0.90 }
+  ],
+  "data_flows": [
+    { "from": "(external)", "to": "fnol_coordinator", "data": "inbound claim", "protocol": "HTTP" },
+    { "from": "fnol_coordinator", "to": "extract_details", "data": "raw claim data", "protocol": "internal" },
+    { "from": "extract_details", "to": "claims-db-mcp", "data": "claim_id, claimant details", "protocol": "MCP" },
+    { "from": "fnol_coordinator", "to": "parallel_enrichment", "data": "claim_context", "protocol": "internal" },
+    { "from": "enrich_policy", "to": "policy-api-mcp", "data": "policy_number", "protocol": "MCP" },
+    { "from": "enrich_vehicle", "to": "vehicle-api-mcp", "data": "vin", "protocol": "MCP" },
+    { "from": "enrich_weather", "to": "weather-api-mcp", "data": "incident_location", "protocol": "MCP" },
+    { "from": "severity_classifier", "to": "body-shop-a2a", "data": "estimate_request", "protocol": "A2A" },
+    { "from": "fnol_coordinator", "to": "human_review", "data": "classified_claim", "protocol": "internal" }
+  ],
+  "sequence_summary": [
+    "Customer submits claim → fnol_coordinator receives inbound claim",
+    "fnol_coordinator → extract_details extracts claimant info from claims-db-mcp",
+    "fnol_coordinator → parallel_enrichment fans out to 3 sources in parallel",
+    "enrich_policy | enrich_vehicle | enrich_weather query their MCP servers concurrently",
+    "parallel_enrichment consolidates → returns enriched_claim",
+    "fnol_coordinator → severity_classifier applies business rules",
+    "IF severity critical + low fraud → delegate to body-shop-a2a via A2A",
+    "IF critical/high → route to human_review",
+    "fnol_coordinator returns claim confirmation to customer"
+  ],
+  "agent_identity_config": [
+    { "agent_name": "fnol_coordinator", "capabilities": [], "denied": ["claims-db-mcp", "policy-api-mcp", "vehicle-api-mcp", "weather-api-mcp", "review-queue-mcp"], "delegation": ["extract_details", "parallel_enrichment", "severity_classifier", "human_review"], "data_classification": "none" },
+    { "agent_name": "extract_details", "capabilities": ["claims-db-mcp:read-write"], "denied": ["policy-api-mcp", "vehicle-api-mcp", "weather-api-mcp", "review-queue-mcp"], "delegation": [], "data_classification": "pii" },
+    { "agent_name": "enrich_policy", "capabilities": ["policy-api-mcp:read-only"], "denied": ["claims-db-mcp", "vehicle-api-mcp", "weather-api-mcp", "review-queue-mcp"], "delegation": [], "data_classification": "policy" },
+    { "agent_name": "enrich_vehicle", "capabilities": ["vehicle-api-mcp:read-only"], "denied": ["claims-db-mcp", "policy-api-mcp", "weather-api-mcp", "review-queue-mcp"], "delegation": [], "data_classification": "none" },
+    { "agent_name": "enrich_weather", "capabilities": ["weather-api-mcp:read-only"], "denied": ["claims-db-mcp", "policy-api-mcp", "vehicle-api-mcp", "review-queue-mcp"], "delegation": [], "data_classification": "none" },
+    { "agent_name": "severity_classifier", "capabilities": ["severity_classifier_fn"], "denied": ["claims-db-mcp", "policy-api-mcp", "vehicle-api-mcp", "weather-api-mcp", "review-queue-mcp"], "delegation": ["body-shop-a2a"], "data_classification": "none" },
+    { "agent_name": "human_review", "capabilities": ["review-queue-mcp:write-only"], "denied": ["claims-db-mcp", "policy-api-mcp", "vehicle-api-mcp", "weather-api-mcp"], "delegation": [], "data_classification": "pii" }
+  ],
+  "screening_config": {
+    "agents_with_input_screening": ["fnol_coordinator", "extract_details"],
+    "agents_with_output_screening": ["fnol_coordinator", "extract_details", "severity_classifier", "human_review"],
+    "pii_fields": ["claimant_name", "ssn", "policy_number", "phone", "address"]
+  },
+  "cosign_signature": "MEUCIQDa7...cosign-signature-base64...",
+  "blueprint_hash": "sha256:a1b2c3d4e5f6...",
+  "binary_auth_attestation_id": "projects/agentforge-prod/attestors/design-gate/attestations/fnol-001"
+}

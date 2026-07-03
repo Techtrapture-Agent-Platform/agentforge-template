@@ -1,0 +1,43 @@
+# AgentForge configuration — loaded by Design Agent and /validate prompt
+# Monorepo: design-agent-server runs locally; catalogs in agentforge-nonprod-00 (us)
+
+designs_per_month: unlimited
+
+catalogs:
+  project_id: agentforge-nonprod-00
+  location: us
+  patterns_datastore: af-patterns-nonprod_1781609114142
+  skills_datastore: af-skills-nonprod_1781610082870
+  tools_datastore: af-tools-nonprod_1781610488872
+
+design_agent:
+  mcp_server_name: agentforge-design-agent
+  local_url: http://localhost:8080/mcp
+  tools:
+    - design_start
+    - design_status
+    - design_result
+    - validate_contract
+    - verify_attestation
+
+attestation:
+  enabled: true
+  signer: cosign
+  key_ref: "gcpkms://projects/${GCP_PROJECT}/locations/${GCP_REGION}/keyRings/agentforge/cryptoKeys/design-gate"
+  binary_authorization_attestor: "projects/${GCP_PROJECT}/attestors/design-gate"
+
+validation:
+  checks: 16
+  diagram_checks: [13, 14, 15, 16]
+  require_source_hash: true
+
+security:
+  oauth_provider: entra_id
+  oauth_flow: pkce
+  tls_min_version: "1.3"
+  data_residency: us
+
+implement:
+  implicit_validate: true
+  generate_hooks: true
+  enforce_skill_shas: true
