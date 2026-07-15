@@ -1,0 +1,31 @@
+%% HA/DR Lifecycle — generated from plan.md DR strategy (supplement if /design diagram missing)
+%% Render: VS Code Mermaid preview or GitHub
+%% Scenarios: 1 Provision  2 HA  3 DR Failover  4 DR Failback
+
+flowchart TB
+  subgraph primary["Primary — {{primary_region}}"]
+    CR_P[Cloud Run ADK Agent]
+    VTX_P[Vertex AI / Gemini]
+    DATA_P[(Primary data)]
+    CR_P --> VTX_P
+    CR_P --> DATA_P
+  end
+
+  subgraph dr["DR — {{dr_region}} ({{dr_strategy}})"]
+    CR_D[Cloud Run DR standby]
+    DATA_D[(DR replica / backup)]
+    CR_D -.-> DATA_D
+  end
+
+  USERS[Users / Gateway] --> CR_P
+
+  CR_P -->|component failure| CR_P
+  note1[HA: new revision / retry / HITL queue]
+
+  CR_P -->|region failure| FAILOVER[Failover declared]
+  FAILOVER --> CR_D
+  USERS --> CR_D
+
+  CR_D -->|primary restored| FAILBACK[Failback]
+  FAILBACK --> CR_P
+  USERS --> CR_P

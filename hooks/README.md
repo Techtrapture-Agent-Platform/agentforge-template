@@ -5,8 +5,10 @@ Hook` section; they are not authored by hand. They are referenced by the repo-ro
 `.pre-commit-config.yaml` and run before every `git commit` via the open-source
 `pre-commit` framework (pre-commit.com).
 
+**Runtime:** generated agents must use Google ADK (`google-adk` / `google.adk`) only.
+
 Generated scripts (one or more per skill validation hook):
-- check_adk_patterns.py        (from skills/adk-agents)
+- check_adk_patterns.py        (from skills/adk-agents — rejects non-ADK frameworks)
 - check_tool_connections.py    (from skills/adk-tools)
 - check_tf_modules.py          (from skills/company-terraform)
 - check_identity.py            (from skills/company-terraform / company-security)

@@ -3,9 +3,10 @@
 You are guiding a developer through technical decisions for their agentic AI application.
 
 ## Setup
+0. Read `prompts/workspace.md` and resolve **APP_DIR**.
 1. Read `templates/plan-template.md` for the structure
-2. Read `spec.md` from project root — the plan depends on spec signals (§8 sensitive data → security recommendations)
-3. If `plan.md` already exists: read it, identify filled vs empty, offer to continue or start fresh.
+2. Read `APP_DIR/spec.md` — the plan depends on spec signals (§8 sensitive data → security recommendations)
+3. If `APP_DIR/plan.md` already exists: read it, identify filled vs empty, offer to continue or start fresh.
 
 ## Capture (with auto-recommendations from spec.md)
 
@@ -21,7 +22,8 @@ You are guiding a developer through technical decisions for their agentic AI app
 
 ### DR Strategy
 - Ask: "Disaster recovery strategy?" Offer: Backup & Restore, Pilot Light Cold, Pilot Light On-Demand, Warm Standby.
-- Note: "Your choice affects IaC generation — warm standby generates active replica infrastructure."
+- Ask: "DR region?" (must differ from primary — e.g. primary `us-east4` → DR `us-central1`)
+- Note: "Your choice affects IaC generation **and** the HA/DR lifecycle diagram (`diagrams/hadr-lifecycle.*`) at /design — warm standby shows active DR replica; pilot-light shows minimal DR footprint."
 
 ### Security [AUTO-RECOMMEND from spec.md §8]
 - Read §8 from spec.md. Auto-recommend:
@@ -55,6 +57,6 @@ Report: "Plan validation complete. All [N] decisions captured. [warnings if any]
 
 ## Save
 1. Assemble as markdown matching `templates/plan-template.md` structure
-2. If `plan.md` exists: show diff, ask "Overwrite? (y/n)"
-3. Write to `plan.md` in project root
-4. Report: "✅ plan.md written. Next: run /design."
+2. If `APP_DIR/plan.md` exists: show diff, ask "Overwrite? (y/n)"
+3. Write to `APP_DIR/plan.md` (never the template root)
+4. Report: "✅ APP_DIR/plan.md written. Next: run /design."

@@ -14,8 +14,8 @@ Enterprise AgentForge preset aligned with [AnchorOps/agentforge](https://github.
 ```
 agentforge-template/
 ├── preset.yml                    # manifest
-├── design-contract-template.md
-├── prompts/                      # /specify → /implement
+├── prompts/                      # /specify → /implement (+ workspace.md)
+├── apps/                         # generated per-agent outputs (APP_DIR)
 ├── templates/
 ├── meta-skills/                  # MS1–MS4 (Design Agent)
 ├── skills/                       # S1–S6 (/implement)
@@ -23,24 +23,44 @@ agentforge-template/
 ├── schemas/
 ├── design-agent/system-prompt.md
 ├── hooks/README.md
-├── samples/
+├── samples/                      # reference examples (read-only)
+├── .agentforge/active-app          # current apps/<slug>
 ├── .specify/enterprise-config.yml  # nonprod catalog IDs + MCP (monorepo only)
 ├── .claude/commands/
 └── .cursor/{rules,mcp.json}
 ```
 
+## App output folder
+
+Slash commands write into **`apps/<app-slug>/`**, not the template root:
+
+`/specify` → `spec.md` · `/plan` → `plan.md` · `/design` → `design-contract.md` + `diagrams/` · `/validate` → `design-contract.json` · `/implement` → `app/`, `deployment/`, `ci-cd/`, … (optional basic testing if user says yes)
+
+See `apps/README.md` and `prompts/workspace.md`.
+
 ## Quick start
 
 ```bash
-cd ../design-agent-server
-python3 -m venv .venv && .venv/bin/pip install -e .
-cp .env.example .env
-.venv/bin/python -m server.app
+git clone https://github.com/Techtrapture-Agent-Platform/agentforge-template.git
+cd agentforge-template
 
-cd ../agentforge-template
-cursor .
-# /specify → /plan → /design → /validate → /tasks → /implement
+# 1. API key (get from your platform admin)
+cp .env.local.example .env.local
+# edit .env.local → AGENTFORGE_API_KEY=<your-key>
+
+# 2. Open Cursor WITH the key loaded (required for /design and /validate MCP)
+chmod +x scripts/cursor.sh
+./scripts/cursor.sh
+
+# 3. Workflow in Cursor chat
+# /specify → /plan → /design → /validate → /implement
+# (creates apps/<your-slug>/ and writes all artifacts there)
 ```
+
+**Important:** `export AGENTFORGE_API_KEY=...` in a terminal is not enough if you open Cursor from the Dock.
+MCP reads the key from Cursor's process environment — use `./scripts/cursor.sh` or run `cursor .` from the same terminal after `export`.
+
+No local Design Agent server needed — MCP points at hosted Cloud Run (see `.cursor/mcp.json`).
 
 ## Docs
 

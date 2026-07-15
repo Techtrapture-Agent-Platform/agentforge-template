@@ -8,11 +8,6 @@ description: >
 
 archetype: agentic
 
-templates:
-  spec: templates/spec-template.md
-  plan: templates/plan-template.md
-  tasks: templates/tasks-template.md
-
 commands:
   - prompts/specify.md
   - prompts/plan.md
@@ -20,6 +15,14 @@ commands:
   - prompts/validate.md
   - prompts/tasks.md
   - prompts/implement.md
+
+templates:
+  spec: templates/spec-template.md
+  plan: templates/plan-template.md
+  tasks: templates/tasks-template.md
+  deployment: templates/deployment-guide-template.md
+  disaster_recovery: templates/disaster-recovery-template.md
+  hadr_diagram: templates/hadr-diagram.mermaid
 
 meta_skills:    # Loaded into Design Agent LlmAgent via SkillToolset
   - meta-skills/pattern-composition/SKILL.md
@@ -40,10 +43,10 @@ discovery_corpus:
 skills:         # Loaded into coding agent during /implement
   domain:
     - name: adk-agents
-      version: "1.2.0"
+      version: "2.0.0"          # Google ADK (google-adk) only — see skills/adk-agents/SKILL.md
       source: github.com/anchorops/skills/adk-agents
     - name: adk-tools
-      version: "1.1.0"
+      version: "2.0.0"          # ADK FunctionTool / MCPToolset / A2A
       source: github.com/anchorops/skills/adk-tools
   overlay:
     - name: company-terraform

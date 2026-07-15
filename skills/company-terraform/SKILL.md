@@ -15,6 +15,11 @@ concern from the cosign-signed `design-contract.json`.
 ## AgentForge-specific difference (vs. AgentCatalyst base)
 Generates Agent Gateway proxy routes (not Apigee), Agent Identity tokens (not Workload Identity), and an Agent Registry entry (not API Hub). Uses company-terraform modules from the GitHub MCP Server.
 
+**Multi-region / DR:** Read `plan.md` primary + DR region and DR strategy. Terraform must declare:
+- Primary region modules in `var.region` (primary)
+- DR region replica / standby flags per strategy (Warm Standby → active DR Cloud Run min instances; Pilot Light → minimal DR footprint)
+- Outputs: `primary_service_url`, `dr_service_url` (when applicable) for `docs/DEPLOYMENT.md` and `docs/DISASTER-RECOVERY.md`
+
 > The full generation patterns are inherited from the AgentCatalyst greenfield `company-terraform`
 > skill. Apply the AgentForge difference above. (See: AgentCatalyst Architecture Appendix
 > S1–S6.) This file is the AgentForge overlay; keep the base patterns in sync via the

@@ -10,20 +10,20 @@ archetype: agentic
 
 | Category | Files | Source |
 |---|---|---|
-| Agent classes | `app/agents/*.py` | Design Contract §3 agent topology |
-| MCP connections | `app/mcp_connections/*.py` | Design Contract §5 tool bindings |
-| A2A clients | `app/a2a_clients/*.py` | Design Contract §5 A2A bindings |
-| FunctionTools (first draft) | `app/tools/*.py` | Design Contract §9 business rules |
-| Model Armor callbacks | `app/security/*.py` | Design Contract §16 screening config |
-| Terraform (multi-region) | `deployment/terraform/*.tf` | Design Contract §8 infra modules |
-| Gateway proxy routes | `deployment/terraform/gateway/*.tf` | Design Contract §5 tool bindings |
-| Agent Identity tokens | `deployment/terraform/identity/*.tf` | Design Contract §15 Agent Identity Config |
-| Agent Registry entry | `deployment/terraform/registry/*.tf` | Design Contract §1 + §3 |
-| OTel collector config | `config/otel-collector-config.yaml` | Always generated |
-| CI/CD pipelines | `ci-cd/*.yaml` | Plan CI/CD settings |
-| Pre-commit eval hook | `.pre-commit-config.yaml` | Always generated |
-| Golden dataset (starter) | `eval/golden-dataset.json` | Spec §10 acceptance criteria |
-| EvalOps pipeline | `eval/pipeline.yaml` | Plan EvalOps settings |
+| Agent classes | `APP_DIR/app/agents/*.py` | Design Contract §3 agent topology |
+| MCP connections | `APP_DIR/app/mcp_connections/*.py` | Design Contract §5 tool bindings |
+| A2A clients | `APP_DIR/app/a2a_clients/*.py` | Design Contract §5 A2A bindings |
+| FunctionTools (first draft) | `APP_DIR/app/tools/*.py` | Design Contract §9 business rules |
+| Model Armor callbacks | `APP_DIR/app/security/*.py` | Design Contract §16 screening config |
+| Terraform (multi-region) | `APP_DIR/deployment/terraform/*.tf` | Design Contract §8 infra modules |
+| Gateway proxy routes | `APP_DIR/deployment/terraform/gateway/*.tf` | Design Contract §5 tool bindings |
+| Agent Identity tokens | `APP_DIR/deployment/terraform/identity/*.tf` | Design Contract §15 Agent Identity Config |
+| Agent Registry entry | `APP_DIR/deployment/terraform/registry/*.tf` | Design Contract §1 + §3 |
+| OTel collector config | `APP_DIR/config/otel-collector-config.yaml` | Always generated |
+| CI/CD pipelines | `APP_DIR/ci-cd/*.yaml` | Plan CI/CD settings |
+| Pre-commit eval hook | `APP_DIR/.pre-commit-config.yaml` | Always generated |
+| Golden dataset (starter) | `APP_DIR/eval/golden-dataset.json` | Spec §10 acceptance criteria |
+| EvalOps pipeline | `APP_DIR/eval/pipeline.yaml` | Plan EvalOps settings |
 
 ## Developer Implements (5-10%)
 

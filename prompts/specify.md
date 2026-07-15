@@ -3,8 +3,10 @@
 You are guiding a developer through writing a structured specification for an agentic AI application.
 
 ## Setup
+0. Read `prompts/workspace.md` and resolve **APP_DIR** (`apps/<app-slug>/`).
+   - First run: ask for a kebab-case app slug (e.g. `patient-intake-triage`), create `apps/<slug>/`, write `.agentforge/active-app`.
 1. Read `templates/spec-template.md` for the 11-section structure
-2. If `spec.md` already exists in the project root, read it. Identify filled vs empty sections.
+2. If `APP_DIR/spec.md` already exists, read it. Identify filled vs empty sections.
    Tell the developer: "I found an existing spec.md with sections [X] filled. Continue from §[Y], or start fresh?"
    If continue: skip to first empty section. If start fresh: confirm overwrite.
 
@@ -113,6 +115,6 @@ If WARN only: "Warnings won't stop you, but fixing them improves blueprint quali
 
 ## Save
 1. Assemble complete spec as markdown matching `templates/spec-template.md` structure
-2. If `spec.md` exists: show diff, ask "Overwrite? (y/n)"
-3. Write to `spec.md` in project root
-4. Report: "✅ spec.md written ([size], 11 sections). Signal score: [X]/100. Next: run /plan."
+2. If `APP_DIR/spec.md` exists: show diff, ask "Overwrite? (y/n)"
+3. Write to `APP_DIR/spec.md` (never the template root)
+4. Report: "✅ APP_DIR/spec.md written ([size], 11 sections). Signal score: [X]/100. Next: run /plan."

@@ -2,14 +2,15 @@
 
 ## Prerequisites
 
-- `design-contract.md` reviewed
-- Prefer `design-contract.json` from `/validate` (warn if missing)
+- Read `prompts/workspace.md` and resolve **APP_DIR**
+- `APP_DIR/design-contract.md` reviewed
+- Prefer `APP_DIR/design-contract.json` from `/validate` (warn if missing)
 
 ## Your job
 
-1. Read `design-contract.json` (or `.md` if json missing)
+1. Read `APP_DIR/design-contract.json` (or `APP_DIR/design-contract.md` if json missing)
 2. Read `templates/tasks-template.md`
-3. List every artifact `/implement` will generate vs what developer writes manually
+3. List every artifact `/implement` will generate under **APP_DIR** vs what developer writes manually
 
 ## Categorize
 
@@ -29,4 +30,4 @@ Typical manual work:
 
 ## Output
 
-Save `tasks.md`. Tell developer to run `/implement` when ready.
+Save `APP_DIR/tasks.md`. Paths in the task list must be under `APP_DIR/` (e.g. `APP_DIR/app/agents/…`). Tell developer to run `/implement` when ready.

@@ -4,5 +4,16 @@ When the user says "specify"/"specify my agent"  -> read prompts/specify.md and 
 When the user says "plan"                          -> read prompts/plan.md and follow it.
 When the user says "design"                        -> read prompts/design.md and follow it.
 When the user says "validate"                      -> read prompts/validate.md and follow it.
+When the user says "tasks"                         -> read prompts/tasks.md and follow it.
 When the user says "implement"                     -> read prompts/implement.md and follow it.
-Always fill spec.md against templates/spec-template.md (11 sections).
+  /implement MUST ask the user which ADK auth mechanism to use (Step 1.5) and wait for
+  a/b/c/d before generating any code; write APP_DIR/auth-config.yml then app/auth.py.
+  After code gen, ask "Do you want basic testing?" — only run import smoke + hooks if yes.
+  Always generate APP_DIR/docs/DEPLOYMENT.md and docs/DISASTER-RECOVERY.md (GCloud deploy + DR runbook).
+  /implement MUST generate Google ADK agents only (package google-adk, imports from google.adk).
+  Follow skills/adk-agents/SKILL.md + memory/adk-reference.md; docs https://adk.dev/llms.txt.
+  Never use LangChain/LangGraph/CrewAI/AutoGen or raw LLM SDK chat loops as the agent runtime.
+  Tools: FunctionTool by default; MCP only as client to existing remote/public MCP
+  (GitHub, GCP MCP, MCP Toolbox for Databases, etc.) — never build custom MCP servers.
+Always resolve APP_DIR via prompts/workspace.md first (apps/<slug>/). Never write spec/plan/design/code into the template root.
+Always fill APP_DIR/spec.md against templates/spec-template.md (11 sections).
