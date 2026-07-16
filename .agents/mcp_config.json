@@ -1,11 +1,17 @@
 {
   "mcpServers": {
     "agentforge-design-agent": {
-      "serverUrl": "https://design-agent-mcp-kri6xyjbwa-uk.a.run.app/mcp",
-      "headers": {
-        "Authorization": "Bearer ${AGENTFORGE_API_KEY}"
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://design-agent-mcp-kri6xyjbwa-uk.a.run.app/mcp",
+        "--header",
+        "Authorization: Bearer ${AGENTFORGE_API_KEY}"
+      ],
+      "env": {
+        "AGENTFORGE_API_KEY": "dev-enterprise-key"
       }
     }
   }
 }
-
