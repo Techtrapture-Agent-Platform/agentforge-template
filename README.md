@@ -27,7 +27,8 @@ agentforge-template/
 ├── .agentforge/active-app          # current apps/<slug>
 ├── .specify/enterprise-config.yml  # nonprod catalog IDs + MCP (monorepo only)
 ├── .claude/commands/
-└── .cursor/{rules,mcp.json}
+├── .cursor/{rules,mcp.json}
+└── .agents/mcp_config.json      # Antigravity MCP config (workspace-local)
 ```
 
 ## App output folder
@@ -48,7 +49,9 @@ cd agentforge-template
 cp .env.local.example .env.local
 # edit .env.local → AGENTFORGE_API_KEY=<your-key>
 
-# 2. Open Cursor WITH the key loaded (required for /design and /validate MCP)
+# 2. Open your IDE with `AGENTFORGE_API_KEY` loaded (required for /design and /validate MCP)
+#    - Cursor: use scripts/cursor.sh so Cursor inherits your env vars.
+#    - Antigravity: load the key in Antigravity; MCP reads it from `${env:AGENTFORGE_API_KEY}` in .agents/mcp_config.json.
 chmod +x scripts/cursor.sh
 ./scripts/cursor.sh
 
@@ -60,7 +63,8 @@ chmod +x scripts/cursor.sh
 **Important:** `export AGENTFORGE_API_KEY=...` in a terminal is not enough if you open Cursor from the Dock.
 MCP reads the key from Cursor's process environment — use `./scripts/cursor.sh` or run `cursor .` from the same terminal after `export`.
 
-No local Design Agent server needed — MCP points at hosted Cloud Run (see `.cursor/mcp.json`).
+No local Design Agent server needed — MCP points at hosted Cloud Run.
+See `.cursor/mcp.json` (Cursor) and `.agents/mcp_config.json` (Antigravity).
 
 ## Docs
 
